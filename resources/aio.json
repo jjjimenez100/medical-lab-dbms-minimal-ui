@@ -1,0 +1,47 @@
+{
+  "aio": {
+    "lab_ref_no": "",
+    "date": ""
+  },
+  "cbc": {
+    "hemoglobin": "",
+    "hematocrit": "",
+    "wbc": "",
+    "rbc": "",
+    "platelet": "",
+    "segmenters": "",
+    "lymphocytes": "",
+    "monocytes": "",
+    "eosinophilis": "",
+    "basophils": "",
+    "stab": ""
+  },
+  "ua": {
+    "color": "",
+    "appearance": "",
+    "protein": "",
+    "sugar": "",
+    "spec_grav": "",
+    "ph": "",
+    "wbc": "",
+    "rbc": "",
+    "epithelial_cells": "",
+    "amorphous_materials": "",
+    "mucus_threads": "",
+    "bacteria": "",
+    "calcium_oxalate": "",
+    "uric_acid": "",
+    "hyaline": "",
+    "granular": "",
+    "others": ""
+  },
+  "fa": {
+    "color": "",
+    "consistency": "",
+    "result": ""
+  },
+  "serology": {
+    "tests": "",
+    "result": ""
+  }
+}

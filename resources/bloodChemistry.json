@@ -1,0 +1,18 @@
+{
+  "BloodChemistry": {
+    "id": "",
+    "patient_id": "",
+    "lab_ref_no": "",
+    "date": "",
+    "fbs": "",
+    "cholesterol": "",
+    "triglycerides": "",
+    "hdl": "",
+    "ldl": "",
+    "creatinine": "",
+    "uric_acid": "",
+    "sgpt_alt": "",
+    "sgot": "",
+    "bun": ""
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "Xray": {
+    "id": "",
+    "patient_id": "",
+    "date": "",
+    "case_no": "",
+    "chest_pa_1": "",
+    "chest_pa_2": "",
+    "chest_pa_3": "",
+    "impression": ""
+  }
+}
