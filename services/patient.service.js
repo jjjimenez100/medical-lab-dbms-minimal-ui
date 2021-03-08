@@ -1,6 +1,15 @@
 import { httpService } from './httpService'
 
 export const PatientService = {
+  async openFolder(folderEntity) {
+    const response = await httpService.post(
+      `/patients/open-folder`,
+      folderEntity
+    )
+    const { data } = response
+
+    return data
+  },
   async getPatientById(id) {
     const response = await httpService.get(`/patients/${id}`)
     const { data } = response

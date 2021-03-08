@@ -12,6 +12,7 @@
       style="display: none"
       @change="onBatchImport"
     />
+    <SystemMessage></SystemMessage>
     <div class="buttons table-action-buttons">
       <button class="button is-primary" @click="onBatchImportClick">
         Batch Import
@@ -86,7 +87,7 @@
           >
             {{ patient[patientProperty] }}
           </td>
-          <td width="350">
+          <td width="400">
             <b-dropdown
               aria-role="list"
               class="table-buttons-spacing"
@@ -97,7 +98,7 @@
             >
               <template #trigger="{ active }">
                 <b-button
-                  label="Lab Results"
+                  label="Lab"
                   type="is-info"
                   :icon-right="active ? 'menu-up' : 'menu-down'"
                 />
@@ -128,6 +129,38 @@
             >
               Delete
             </button>
+            <b-dropdown
+              aria-role="list"
+              class="table-buttons-spacing"
+              @change="
+                (selectedLabResult) => onOpenFile(selectedLabResult, patient)
+              "
+            >
+              <template #trigger="{ active }">
+                <b-button
+                  label="File"
+                  type="is-warning is-light is-outlined"
+                  :icon-right="active ? 'menu-up' : 'menu-down'"
+                />
+              </template>
+
+              <b-dropdown-item :value="getAIOFileName" aria-role="listitem"
+                >AIO</b-dropdown-item
+              >
+              <b-dropdown-item
+                :value="getBloodChemFileName"
+                aria-role="listitem"
+                >Blood Chem</b-dropdown-item
+              >
+              <b-dropdown-item :value="getXRayFileName" aria-role="listitem"
+                >Xray</b-dropdown-item
+              >
+              <b-dropdown-item
+                :value="getPhysicalExamFileName"
+                aria-role="listitem"
+                >Physical Exam</b-dropdown-item
+              >
+            </b-dropdown>
           </td>
         </tr>
       </tbody>
@@ -164,11 +197,19 @@ import {
   Xray,
   PhysicalExamination,
 } from '../constants/resultType'
+import {
+  AIO,
+  BLOOD_CHEM,
+  PHYSICAL_EXAM,
+  XRAY,
+} from '../constants/generatedFileNames'
+import SystemMessage from './SystemMessage'
 
 export default {
   name: 'PatientTable',
   components: {
     Loading,
+    SystemMessage,
   },
   data: () => {
     const patientProperties = [
@@ -199,6 +240,18 @@ export default {
     }
   },
   computed: {
+    getBloodChemFileName() {
+      return BLOOD_CHEM
+    },
+    getPhysicalExamFileName() {
+      return PHYSICAL_EXAM
+    },
+    getXRayFileName() {
+      return XRAY
+    },
+    getAIOFileName() {
+      return AIO
+    },
     getAllInOne() {
       return AllInOne
     },
@@ -338,6 +391,31 @@ export default {
       this.$router.push(
         `/patient/lab-results/${id}/${selectedLabResult}/results`
       )
+    },
+    async onOpenFile(
+      selectedLabResult,
+      // eslint-disable-next-line camelcase
+      { last_name, first_name, middle_name, company }
+    ) {
+      this.isLoading = true
+      try {
+        const body = {
+          fileToOpen: selectedLabResult,
+          last_name,
+          first_name,
+          company,
+          middle_name,
+        }
+        await PatientService.openFolder(body)
+      } catch (error) {
+        this.$toast.error(
+          'Lab result file does not exist. Generate the results first for this patient.',
+          {
+            duration: 2000,
+          }
+        )
+      }
+      this.isLoading = false
     },
   },
 }
