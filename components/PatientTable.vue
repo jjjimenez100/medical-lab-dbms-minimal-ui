@@ -87,7 +87,7 @@
           >
             {{ patient[patientProperty] }}
           </td>
-          <td width="400">
+          <td style="min-width: 380px">
             <b-dropdown
               aria-role="list"
               class="table-buttons-spacing"
@@ -129,13 +129,7 @@
             >
               Delete
             </button>
-            <b-dropdown
-              aria-role="list"
-              class="table-buttons-spacing"
-              @change="
-                (selectedLabResult) => onOpenFile(selectedLabResult, patient)
-              "
-            >
+            <b-dropdown aria-role="list" class="table-buttons-spacing">
               <template #trigger="{ active }">
                 <b-button
                   label="File"
@@ -144,20 +138,28 @@
                 />
               </template>
 
-              <b-dropdown-item :value="getAIOFileName" aria-role="listitem"
+              <b-dropdown-item
+                :value="getAIOFileName"
+                aria-role="listitem"
+                @click="onOpenFile(getAIOFileName, patient)"
                 >AIO</b-dropdown-item
               >
               <b-dropdown-item
                 :value="getBloodChemFileName"
                 aria-role="listitem"
+                @click="onOpenFile(getBloodChemFileName, patient)"
                 >Blood Chem</b-dropdown-item
               >
-              <b-dropdown-item :value="getXRayFileName" aria-role="listitem"
+              <b-dropdown-item
+                :value="getXRayFileName"
+                aria-role="listitem"
+                @click="onOpenFile(getXRayFileName, patient)"
                 >Xray</b-dropdown-item
               >
               <b-dropdown-item
                 :value="getPhysicalExamFileName"
                 aria-role="listitem"
+                @click="onOpenFile(getPhysicalExamFileName, patient)"
                 >Physical Exam</b-dropdown-item
               >
             </b-dropdown>
@@ -231,15 +233,31 @@ export default {
       headers,
       patients: [],
       pageCount: 0,
-      currentPage: 1,
       limit: 5,
       isLoading: false,
-      selectedSearchField: 'company',
-      search: '',
       selectedAllPatients: false,
     }
   },
   computed: {
+    search: {
+      get() {
+        return this.$store.state.table.search
+      },
+      set(value) {
+        this.$store.commit('table/setSearch', value)
+      },
+    },
+    selectedSearchField: {
+      get() {
+        return this.$store.state.table.selectedSearchField
+      },
+      set(value) {
+        this.$store.commit('table/setSelectedSearchField', value)
+      },
+    },
+    currentPage() {
+      return this.$store.state.table.currentPage
+    },
     getBloodChemFileName() {
       return BLOOD_CHEM
     },
@@ -282,7 +300,12 @@ export default {
     },
   },
   async created() {
-    await this.getPatients('', '', this.currentPage, this.limit)
+    await this.getPatients(
+      this.search,
+      this.selectedSearchField,
+      this.currentPage,
+      this.limit
+    )
   },
   methods: {
     navigateToEditPatientPage({ id }) {
@@ -306,7 +329,7 @@ export default {
       return capitalCase(input)
     },
     async getNextPage() {
-      this.currentPage += 1
+      this.$store.commit('table/setCurrentPage', this.currentPage + 1)
       await this.getPatients(
         this.search,
         this.selectedSearchField,
@@ -315,7 +338,7 @@ export default {
       )
     },
     async getPreviousPage() {
-      this.currentPage -= 1
+      this.$store.commit('table/setCurrentPage', this.currentPage - 1)
       await this.getPatients(
         this.search,
         this.selectedSearchField,
@@ -332,6 +355,7 @@ export default {
         limit
       )
 
+      this.$store.commit('table/setCurrentPage', page)
       this.patients = patients
       this.pageCount = totalNumberOfPages
       this.isLoading = false
@@ -345,19 +369,20 @@ export default {
     },
     async onSearch() {
       if (!this.search) {
-        this.$toast.error('Please enter a search query first')
+        await this.getPatients('', '', 1, this.limit)
         return
       }
 
       await this.getPatients(
         this.search,
         this.selectedSearchField,
-        this.currentPage,
+        1,
         this.limit
       )
     },
     async onReset() {
-      this.currentPage = 1
+      this.$store.commit('table/setCurrentPage', 1)
+      this.search = ''
       await this.getPatients('', '', this.currentPage, this.limit)
     },
     async onBatchImport(event) {

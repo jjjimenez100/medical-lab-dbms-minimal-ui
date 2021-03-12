@@ -50,6 +50,7 @@ import { capitalCase } from 'change-case'
 import Loading from 'vue-loading-overlay'
 import { ResultService } from '../../../../../services/results.service'
 import { AllInOne } from '../../../../../constants/resultType'
+import { GenerateService } from '../../../../../services/generate.service'
 
 export default {
   name: 'Results',
@@ -99,9 +100,10 @@ export default {
         }
       }
       await ResultService.updateResult(this.id, resultEntity)
+      await GenerateService.generateResults([this.id])
       this.isLoading = false
       this.$toast.success('Successfully edited patient results, redirecting...')
-      setTimeout(() => this.$router.push('/'), 2000)
+      setTimeout(() => this.$router.push('/'), 1000)
     },
     onCancel() {
       this.$router.push('/')

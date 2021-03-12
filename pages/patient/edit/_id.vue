@@ -35,6 +35,7 @@
 import { capitalCase } from 'change-case'
 import Loading from 'vue-loading-overlay'
 import { PatientService } from '../../../services/patient.service'
+import { GenerateService } from '../../../services/generate.service'
 
 export default {
   name: 'Id',
@@ -44,7 +45,7 @@ export default {
   async asyncData({ params, error }) {
     const { id } = params
     const patient = await PatientService.getPatientById(id)
-    return { patient }
+    return { patient, id }
   },
   data: () => {
     return {
@@ -64,9 +65,10 @@ export default {
     async onSave() {
       this.isLoading = true
       await PatientService.updatePatient(this.patient)
+      await GenerateService.generateResults([this.id])
       this.isLoading = false
       this.$toast.success('Successfully edited patient, redirecting...')
-      setTimeout(() => this.$router.push('/'), 2000)
+      setTimeout(() => this.$router.push('/'), 1000)
     },
     onCancel() {
       this.$router.push('/')

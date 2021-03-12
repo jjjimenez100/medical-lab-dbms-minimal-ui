@@ -33,6 +33,12 @@
           you can simply ignore them and not print them.
         </li>
         <li>
+          Updating patient info or lab results will
+          <strong
+            >automatically re-generate the lab results for that patient</strong
+          >.
+        </li>
+        <li>
           Please try to limit the number of batch import rows to
           <strong>30</strong>
         </li>
