@@ -44,6 +44,8 @@ export default {
   data: () => {
     return {
       patient: {
+        patient_no: '',
+        date_of_medical: '',
         last_name: '',
         first_name: '',
         middle_name: '',
