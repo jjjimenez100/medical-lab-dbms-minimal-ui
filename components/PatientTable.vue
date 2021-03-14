@@ -215,6 +215,8 @@ export default {
   },
   data: () => {
     const patientProperties = [
+      'patient_no',
+      'date_of_medical',
       'last_name',
       'first_name',
       'middle_name',
