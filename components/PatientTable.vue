@@ -64,109 +64,111 @@
         </button>
       </div>
     </div>
-    <table class="table is-bordered is-striped is-hoverable is-fullwidth">
-      <thead>
-        <tr>
-          <th>
-            <input type="checkbox" @click="selectAllPatients" />
-          </th>
-          <th v-for="header in headers" :key="header">{{ header }}</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(patient, index) in patients" :key="`patient-${index}`">
-          <th>
-            <input v-model="patient.selected" type="checkbox" />
-          </th>
-          <td
-            v-for="(
-              patientProperty, patientPropertiesIndex
-            ) in patientProperties"
-            :key="`${index}-${patient[patientProperty]}-${patientPropertiesIndex}`"
-          >
-            {{ patient[patientProperty] }}
-          </td>
-          <td style="min-width: 380px">
-            <b-dropdown
-              aria-role="list"
-              class="table-buttons-spacing"
-              @change="
-                (selectedLabResult) =>
-                  onLabResultSelection(selectedLabResult, patient)
-              "
+    <div style="overflow-x: auto">
+      <table class="table is-bordered is-striped is-hoverable is-fullwidth">
+        <thead>
+          <tr>
+            <th>
+              <input type="checkbox" @click="selectAllPatients" />
+            </th>
+            <th v-for="header in headers" :key="header">{{ header }}</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(patient, index) in patients" :key="`patient-${index}`">
+            <th>
+              <input v-model="patient.selected" type="checkbox" />
+            </th>
+            <td
+              v-for="(
+                patientProperty, patientPropertiesIndex
+              ) in patientProperties"
+              :key="`${index}-${patient[patientProperty]}-${patientPropertiesIndex}`"
             >
-              <template #trigger="{ active }">
-                <b-button
-                  label="Lab"
-                  type="is-info"
-                  :icon-right="active ? 'menu-up' : 'menu-down'"
-                />
-              </template>
+              {{ (patient[patientProperty] || '').toUpperCase() }}
+            </td>
+            <td style="min-width: 380px">
+              <b-dropdown
+                aria-role="list"
+                class="table-buttons-spacing"
+                @change="
+                  (selectedLabResult) =>
+                    onLabResultSelection(selectedLabResult, patient)
+                "
+              >
+                <template #trigger="{ active }">
+                  <b-button
+                    label="Lab"
+                    type="is-info"
+                    :icon-right="active ? 'menu-up' : 'menu-down'"
+                  />
+                </template>
 
-              <b-dropdown-item :value="getAllInOne" aria-role="listitem"
-                >AIO</b-dropdown-item
+                <b-dropdown-item :value="getAllInOne" aria-role="listitem"
+                  >AIO</b-dropdown-item
+                >
+                <b-dropdown-item :value="getBloodChem" aria-role="listitem"
+                  >Blood Chem</b-dropdown-item
+                >
+                <b-dropdown-item :value="getXray" aria-role="listitem"
+                  >Xray</b-dropdown-item
+                >
+                <b-dropdown-item :value="getPhysicalExam" aria-role="listitem"
+                  >Physical Exam</b-dropdown-item
+                >
+              </b-dropdown>
+              <button
+                class="button is-warning table-buttons-spacing"
+                @click="navigateToEditPatientPage(patient)"
               >
-              <b-dropdown-item :value="getBloodChem" aria-role="listitem"
-                >Blood Chem</b-dropdown-item
+                Edit
+              </button>
+              <button
+                class="button is-danger table-buttons-spacing"
+                @click="onDelete(patient)"
               >
-              <b-dropdown-item :value="getXray" aria-role="listitem"
-                >Xray</b-dropdown-item
-              >
-              <b-dropdown-item :value="getPhysicalExam" aria-role="listitem"
-                >Physical Exam</b-dropdown-item
-              >
-            </b-dropdown>
-            <button
-              class="button is-warning table-buttons-spacing"
-              @click="navigateToEditPatientPage(patient)"
-            >
-              Edit
-            </button>
-            <button
-              class="button is-danger table-buttons-spacing"
-              @click="onDelete(patient)"
-            >
-              Delete
-            </button>
-            <b-dropdown aria-role="list" class="table-buttons-spacing">
-              <template #trigger="{ active }">
-                <b-button
-                  label="File"
-                  type="is-warning is-light is-outlined"
-                  :icon-right="active ? 'menu-up' : 'menu-down'"
-                />
-              </template>
+                Delete
+              </button>
+              <b-dropdown aria-role="list" class="table-buttons-spacing">
+                <template #trigger="{ active }">
+                  <b-button
+                    label="File"
+                    type="is-warning is-light is-outlined"
+                    :icon-right="active ? 'menu-up' : 'menu-down'"
+                  />
+                </template>
 
-              <b-dropdown-item
-                :value="getAIOFileName"
-                aria-role="listitem"
-                @click="onOpenFile(getAIOFileName, patient)"
-                >AIO</b-dropdown-item
-              >
-              <b-dropdown-item
-                :value="getBloodChemFileName"
-                aria-role="listitem"
-                @click="onOpenFile(getBloodChemFileName, patient)"
-                >Blood Chem</b-dropdown-item
-              >
-              <b-dropdown-item
-                :value="getXRayFileName"
-                aria-role="listitem"
-                @click="onOpenFile(getXRayFileName, patient)"
-                >Xray</b-dropdown-item
-              >
-              <b-dropdown-item
-                :value="getPhysicalExamFileName"
-                aria-role="listitem"
-                @click="onOpenFile(getPhysicalExamFileName, patient)"
-                >Physical Exam</b-dropdown-item
-              >
-            </b-dropdown>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+                <b-dropdown-item
+                  :value="getAIOFileName"
+                  aria-role="listitem"
+                  @click="onOpenFile(getAIOFileName, patient)"
+                  >AIO</b-dropdown-item
+                >
+                <b-dropdown-item
+                  :value="getBloodChemFileName"
+                  aria-role="listitem"
+                  @click="onOpenFile(getBloodChemFileName, patient)"
+                  >Blood Chem</b-dropdown-item
+                >
+                <b-dropdown-item
+                  :value="getXRayFileName"
+                  aria-role="listitem"
+                  @click="onOpenFile(getXRayFileName, patient)"
+                  >Xray</b-dropdown-item
+                >
+                <b-dropdown-item
+                  :value="getPhysicalExamFileName"
+                  aria-role="listitem"
+                  @click="onOpenFile(getPhysicalExamFileName, patient)"
+                  >Physical Exam</b-dropdown-item
+                >
+              </b-dropdown>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     <div class="buttons navbar-end">
       <button
         class="button is-primary is-light is-outlined"
