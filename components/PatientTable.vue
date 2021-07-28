@@ -216,6 +216,8 @@ export default {
   data: () => {
     const patientProperties = [
       'patient_no',
+      'aio_lab_ref',
+      'bloodchem_lab_ref',
       'date_of_medical',
       'last_name',
       'first_name',
