@@ -11,6 +11,7 @@
       type="file"
       style="display: none"
       @change="onBatchImport"
+      @click="resetFileUpload"
     />
     <SystemMessage></SystemMessage>
     <div class="buttons table-action-buttons">
@@ -398,6 +399,9 @@ export default {
       await this.onReset()
       this.isLoading = false
       this.$toast.success('Done with batch import')
+    },
+    resetFileUpload(event) {
+      event.target.value = ''
     },
     async onGenerate() {
       if (this.getSelectedPatients.length === 0) {
